@@ -263,6 +263,7 @@ async function enter(){
   $('userChip').textContent=S.nombre+' · '+(S.rol==='admin'?'Administrador':'Planta');
   $('tabAdmin').classList.toggle('hidden',S.rol!=='admin');
   await load(true);
+  var hq=/[#&]q=([^&]*)/.exec(location.hash); if(hq){ try{ $('q').value=decodeURIComponent(hq[1]); }catch(e){} renderMoldes(); }
   clearInterval(S.timer);S.timer=setInterval(function(){if(!document.hidden&&!document.querySelector('.dlg'))load(false)},45000);
 }
 
