@@ -56,6 +56,13 @@ main{flex:1;padding:0 16px 24px;max-width:1100px;width:100%;margin:0 auto}
 .tag{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--sky);color:var(--indigo)}
 .tag.est{background:var(--sage-bg);color:var(--sage-d)}
 .tag.bad{background:var(--wine-bg);color:var(--wine)}
+.tag.cv{font-weight:600}
+.tag.cv.ACTIVO{background:#dff3e4;color:#1d6b34}
+.tag.cv.EN_REPARACION{background:#fff1cc;color:#8a5a00}
+.tag.cv.INACTIVO{background:#e7e9ee;color:#4a5160}
+.tag.cv.BAJA{background:#f9dcdc;color:#9a1f1f}
+.tag.cv.SIN{background:#fff;color:#6b7280;border:1px dashed #9aa1ad}
+.tag.cv.sug{border:1px dashed currentColor}
 .tag.two{background:var(--amber-bg);color:var(--amber)}
 .mold .who{font-size:11.5px;color:var(--mut);margin-top:5px}
 .mold .acts{display:flex;gap:6px;margin-top:7px}
@@ -150,6 +157,7 @@ footer.cred{text-align:center;font-size:12px;color:var(--mut);padding:14px 16px;
       <div class="toolbar">
         <input type="search" id="q" placeholder="Buscar molde, cliente, posición, Nº control…">
         <select id="fEstado"><option value="">Todos los estados</option></select>
+        <select id="fCiclo"></select>
       </div>
       <div class="filters" id="filters"></div>
       <div class="count" id="count"></div>
@@ -277,6 +285,7 @@ async function load(first){
     if(first){
       var sel=$('fEstado');
       sel.innerHTML='<option value="">Todos los estados</option>'+S.data.estados.map(function(e){return '<option>'+esc(e)+'</option>'}).join('');
+      $('fCiclo').innerHTML='<option value="">Todo el ciclo de vida</option>'+(S.data.ciclos||[]).map(function(c){return '<option value="'+c+'">'+cvIcon(c)+' '+cvTxt(c)+'</option>'}).join('')+'<option value="SIN">⚪ Sin clasificar</option><option value="SUG">Solo sugeridos (a confirmar)</option>';
     }
     $('dlPos').innerHTML=S.data.posiciones.map(function(p){return '<option value="'+esc(p.codigo)+'">'}).join('');
     renderAll();
@@ -316,6 +325,14 @@ $('filters').addEventListener('click',function(ev){
 });
 $('q').addEventListener('input',renderMoldes);
 $('fEstado').addEventListener('change',renderMoldes);
+$('fCiclo').addEventListener('change',renderMoldes);
+var CV_TXT={ACTIVO:'Activo',EN_REPARACION:'En reparación',INACTIVO:'Inactivo',BAJA:'Baja'}, CV_ICON={ACTIVO:'🟢',EN_REPARACION:'🟡',INACTIVO:'⚪',BAJA:'🔴'};
+function cvTxt(c){return CV_TXT[c]||c} function cvIcon(c){return CV_ICON[c]||'⚪'}
+function cvTag(m){
+  if(!m.ciclo_vida)return '<span class="tag cv SIN">Sin clasificar</span>';
+  var sug=m.ciclo_vida_origen==='sugerido';
+  return '<span class="tag cv '+m.ciclo_vida+(sug?' sug':'')+'" title="'+(sug?'Sugerido por el sistema, falta confirmar':'Confirmado por '+esc(m.ciclo_vida_por||'')+(m.ciclo_vida_en?' · '+fmtDT(m.ciclo_vida_en):''))+'">'+cvIcon(m.ciclo_vida)+' '+cvTxt(m.ciclo_vida)+(sug?' (sugerido)':'')+'</span>';
+}
 
 function matchFiltro(m,pm){
   var p=pm[m.posicion]||{tipo:'SIN_ASIGNAR'};
@@ -328,14 +345,16 @@ function matchFiltro(m,pm){
   } return true;
 }
 function renderMoldes(){
-  var pm=posMap(), q=norm($('q').value).trim(), fe=$('fEstado').value;
+  var pm=posMap(), q=norm($('q').value).trim(), fe=$('fEstado').value, fc=$('fCiclo').value;
   var list=S.data.moldes.filter(function(m){
     if(!matchFiltro(m,pm))return false;
     if(fe&&m.estado!==fe)return false;
+    if(fc==='SIN'){if(m.ciclo_vida)return false}else if(fc==='SUG'){if(m.ciclo_vida_origen!=='sugerido')return false}else if(fc&&m.ciclo_vida!==fc)return false;
     if(q){var h=norm([m.especificacion,m.cliente,m.posicion,m.n_control,m.estado].join(' '));return q.split(/\s+/).every(function(t){return h.indexOf(t)>-1})}
     return true;
   }).sort(function(a,b){return ((pm[a.posicion]||{orden:99999}).orden)-((pm[b.posicion]||{orden:99999}).orden)});
-  $('count').textContent=list.length+' de '+S.data.moldes.length+' moldes';
+  var cnt={};S.data.moldes.forEach(function(m){var k=m.ciclo_vida||'SIN';cnt[k]=(cnt[k]||0)+1});
+  $('count').textContent=list.length+' de '+S.data.moldes.length+' moldes · '+(S.data.ciclos||[]).map(function(c){return cvIcon(c)+' '+(cnt[c]||0)}).join('  ')+'  ⚪ sin clasificar '+(cnt.SIN||0);
   var shown=list.slice(0,300);
   $('cards').innerHTML=shown.map(function(m){
     var p=pm[m.posicion]||{tipo:'SIN_ASIGNAR'};
@@ -343,7 +362,7 @@ function renderMoldes(){
       '<div class="esp">'+esc(m.especificacion)+'</div><div class="cli">'+esc(m.cliente||'Sin cliente')+'</div>'+
       '<div class="tags">'+(m.n_control?'<span class="tag">Control '+esc(m.n_control)+'</span>':'')+
       (m.personal_para_mover>1?'<span class="tag two">'+m.personal_para_mover+' personas</span>':'')+
-      (m.estado?'<span class="tag est">'+esc(m.estado)+'</span>':'')+
+      (m.estado?'<span class="tag est">'+esc(m.estado)+'</span>':'')+cvTag(m)+
       (p.tipo==='SIN_ASIGNAR'?'<span class="tag bad">Sin ubicación</span>':'')+'</div>'+
       '<div class="who">Último cambio: '+esc(m.actualizado_por)+' · '+fmtDT(m.actualizado_en)+(m.actualizado_ip?' · '+esc(m.actualizado_ip):'')+'</div>'+
       '<div class="acts"><button class="btn sm" data-mv="'+m.id+'">Mover</button>'+
@@ -456,6 +475,7 @@ function editDlg(id){
     (adm?'<div class="field"><label>Especificación</label><input id="eEsp" maxlength="300" value="'+esc(m.especificacion)+'"></div><div class="row2"><div class="field"><label>Cliente</label><input id="eCli" maxlength="120" value="'+esc(m.cliente||'')+'"></div><div class="field"><label>Nº control</label><input id="eCtl" maxlength="40" value="'+esc(m.n_control||'')+'"></div></div>':'')+
     '<div class="row2"><div class="field"><label>Estado</label><select id="eEst"><option value="">—</option>'+S.data.estados.map(function(e){return '<option'+(e===m.estado?' selected':'')+'>'+esc(e)+'</option>'}).join('')+'</select></div>'+
     '<div class="field"><label>Personal para mover</label><select id="ePer"><option value="">—</option><option'+(m.personal_para_mover===1?' selected':'')+'>1</option><option'+(m.personal_para_mover===2?' selected':'')+'>2</option></select></div></div>'+
+    (adm?'<div class="field"><label>Ciclo de vida (semáforo)'+(m.ciclo_vida_origen==='sugerido'?' — <b>sugerido, guardá para confirmar</b>':'')+'</label><select id="eCv"><option value="">⚪ Sin clasificar</option>'+(S.data.ciclos||[]).map(function(c){return '<option value="'+c+'"'+(c===m.ciclo_vida?' selected':'')+'>'+cvIcon(c)+' '+cvTxt(c)+'</option>'}).join('')+'</select></div>':'')+
     nameField()+'<div class="err" id="dErr"></div><div class="btns"><button class="btn sec" data-x>Cancelar</button><button class="btn ok" id="dOk">Guardar</button></div>');
   o.querySelector('#dOk').addEventListener('click',async function(){
     var n=getNom(o), er=o.querySelector('#dErr');if(!n){er.textContent='Ingresá tu nombre.';return}
@@ -466,6 +486,7 @@ function editDlg(id){
       var v=o.querySelector('#eEsp').value.trim();if(v!==m.especificacion)b.especificacion=v;
       var c=o.querySelector('#eCli').value.trim();if(c!==(m.cliente||''))b.cliente=c;
       var k=o.querySelector('#eCtl').value.trim();if(k!==(m.n_control||''))b.n_control=k;
+      var cv=o.querySelector('#eCv').value;if(cv!==(m.ciclo_vida||'')||(cv&&m.ciclo_vida_origen==='sugerido'))b.ciclo_vida=cv;
     }
     if(Object.keys(b).length===1){close(o);return}
     try{await api('/api/moldes/'+id,{method:'PATCH',body:b});close(o);toast('Guardado ✔');await load(false)}catch(e){er.textContent=e.message}
