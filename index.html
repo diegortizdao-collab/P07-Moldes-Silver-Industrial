@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P.07 · Listado de moldes — Silver Industrial</title>
+<style>
+:root{
+  --indigo:#373886; --indigo2:#2b2c6b; --bg:#E8F0F7; --card:#fff; --ink:#1f2540; --mut:#5d6788; --line:#cfdbe8;
+  --sage:#6FA37F; --sage-d:#3D6B4E; --sage-bg:#e3f0e7;
+  --wine:#6E2A3A; --wine-bg:#f3dde1; --wine-t:#E7BFC7;
+  --amber:#8a6a1f; --amber-bg:#f6ecd0; --sky:#dbe8f6;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.35;min-height:100vh;display:flex;flex-direction:column}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+header.top{background:var(--indigo);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+header.top .logos{display:flex;align-items:center;gap:10px;background:#fff;border-radius:8px;padding:5px 10px}
+header.top .logos img{height:34px;display:block}
+header.top h1{font-size:17px;margin:0;font-weight:650;flex:1;min-width:160px}
+header.top h1 small{display:block;font-weight:400;opacity:.8;font-size:12px}
+.chip{background:rgba(255,255,255,.15);border-radius:99px;padding:5px 12px;font-size:13px}
+.btn{border:0;border-radius:8px;padding:9px 14px;background:var(--indigo);color:#fff;font-weight:600}
+.btn:hover{background:var(--indigo2)}
+.btn.sec{background:#fff;color:var(--indigo);border:1px solid var(--indigo)}
+.btn.ok{background:var(--sage-d)}
+.btn.warn{background:var(--wine)}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+.btn:disabled{opacity:.5;cursor:default}
+nav.tabs{display:flex;gap:4px;padding:10px 16px 0;overflow-x:auto;background:var(--bg);position:sticky;top:57px;z-index:15}
+nav.tabs button{border:0;background:transparent;padding:9px 14px;border-radius:8px 8px 0 0;color:var(--mut);font-weight:600;white-space:nowrap}
+nav.tabs button.on{background:#fff;color:var(--indigo)}
+main{flex:1;padding:0 16px 24px;max-width:1100px;width:100%;margin:0 auto}
+.panel{background:#fff;border-radius:0 12px 12px 12px;padding:14px;box-shadow:0 1px 3px rgba(40,60,100,.1)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.toolbar input[type=search],.toolbar select,.field input,.field select{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;min-width:0}
+.toolbar input[type=search]{flex:1;min-width:180px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filters button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 12px;font-size:13px;color:var(--mut)}
+.filters button.on{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.count{color:var(--mut);font-size:13px;margin:4px 0 8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.mold{border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;gap:10px;background:#fbfdff}
+.pos{min-width:62px;height:62px;border-radius:10px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:17px;padding:2px;word-break:break-word;line-height:1.05;background:var(--sky);color:var(--indigo)}
+.pos.PALLET{background:var(--sage-bg);color:var(--sage-d)}
+.pos.SIN_ASIGNAR,.pos.OTRO{background:var(--wine-bg);color:var(--wine)}
+.pos.DEPOSITO{background:var(--amber-bg);color:var(--amber)}
+.mold .info{flex:1;min-width:0}
+.mold .esp{font-weight:650}
+.mold .cli{color:var(--mut);font-size:13px}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.tag{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--sky);color:var(--indigo)}
+.tag.est{background:var(--sage-bg);color:var(--sage-d)}
+.tag.bad{background:var(--wine-bg);color:var(--wine)}
+.tag.two{background:var(--amber-bg);color:var(--amber)}
+.mold .who{font-size:11.5px;color:var(--mut);margin-top:5px}
+.mold .acts{display:flex;gap:6px;margin-top:7px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px}
+.cell{border:1px solid var(--line);border-radius:8px;padding:5px 6px;min-height:54px;background:#f6f9fc;cursor:pointer;font-size:12px;overflow:hidden;text-align:left}
+.cell b{display:block;font-size:14px;color:var(--indigo)}
+.cell.occ{background:var(--sky)}
+.cell.free{background:#fff;border-style:dashed;color:var(--mut)}
+.cell.multi{background:var(--amber-bg)}
+.cell span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+h3.sec{margin:16px 0 8px;font-size:14px;color:var(--indigo);text-transform:uppercase;letter-spacing:.04em}
+.pallets{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.pallet{border:1px solid var(--sage);background:var(--sage-bg);border-radius:10px;padding:8px;cursor:pointer}
+.pallet b{color:var(--sage-d)}
+.pallet div{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opts{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.opts label{display:flex;gap:6px;align-items:center}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.field label{font-size:13px;color:var(--mut);font-weight:600}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.preview{overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff;padding:10px;max-height:60vh}
+/* P.07 sheet */
+.sheet{font-family:Arial,Helvetica,sans-serif;color:#000;font-size:10pt}
+.sheet .hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.sheet .hd img{height:42px}
+.sheet h2{font-size:14pt;margin:0}
+.sheet .meta{font-size:9pt;text-align:right}
+.sheet table{border-collapse:collapse;width:100%}
+.sheet th,.sheet td{border:1px solid #000;padding:2px 4px;font-size:9pt;vertical-align:top}
+.sheet th{background:#e6e6e6;text-align:left}
+.sheet tr.libre td{color:#777;font-style:italic}
+.sheet .ft{margin-top:6px;font-size:8pt;color:#333}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(20,25,60,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:14px}
+.dlg{background:#fff;border-radius:14px;padding:18px;width:100%;max-width:460px;max-height:92vh;overflow:auto}
+.dlg h2{margin:0 0 4px;font-size:18px;color:var(--indigo)}
+.dlg .sub{color:var(--mut);margin-bottom:12px;font-size:13px}
+.dlg .btns{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
+.hint{font-size:13px;padding:7px 10px;border-radius:8px;margin:2px 0 10px;background:var(--sky)}
+.hint.good{background:var(--sage-bg);color:var(--sage-d)}
+.hint.bad{background:var(--wine-bg);color:var(--wine)}
+.hint.mid{background:var(--amber-bg);color:var(--amber)}
+.err{color:var(--wine);font-size:13px;margin-top:6px}
+#toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--indigo);color:#fff;padding:10px 16px;border-radius:10px;z-index:80;opacity:0;pointer-events:none;transition:opacity .25s}
+#toast.show{opacity:1}
+#toast.bad{background:var(--wine)}
+footer.cred{text-align:center;font-size:12px;color:var(--mut);padding:14px 16px;border-top:1px solid var(--line)}
+.banner{background:var(--wine-bg);color:var(--wine);padding:8px 14px;font-size:13px;text-align:center}
+#printArea{display:none}
+@media (max-width:560px){ .row2{grid-template-columns:1fr} header.top h1{font-size:15px} nav.tabs{top:96px} }
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  body{background:#fff}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block}
+  .sheet thead{display:table-header-group}
+  .sheet tr{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div id="login" class="ov">
+  <form class="dlg" id="loginForm" autocomplete="off">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><img src="assets/silver-logo.png" alt="Silver Industrial" style="height:36px"><img src="assets/iso-badge.png" alt="ISO 9001:2015" style="height:30px"></div>
+    <h2>P.07 · Listado de moldes</h2>
+    <div class="sub">Registro vivo de la ubicación de moldes. Ingresá tu nombre y la clave de planta.</div>
+    <div class="field"><label>Tu nombre (queda registrado en cada movimiento)</label><input id="lgNombre" required minlength="2" maxlength="60" placeholder="Ej: Maxi Pérez"></div>
+    <div class="field"><label>Clave</label><input id="lgClave" type="password" required></div>
+    <div class="err" id="lgErr"></div>
+    <div class="btns"><button class="btn" id="lgBtn">Ingresar</button></div>
+  </form>
+</div>
+
+<div id="app" class="hidden" style="display:flex;flex-direction:column;flex:1">
+  <header class="top">
+    <div class="logos"><img src="assets/silver-logo.png" alt="Silver Industrial"><img src="assets/iso-badge.png" alt="ISO 9001:2015"></div>
+    <h1>P.07 · Listado de moldes<small id="hdSub"></small></h1>
+    <span class="chip" id="userChip"></span>
+    <button class="btn ghost sm" id="btnRefresh" title="Actualizar">↻</button>
+    <button class="btn ghost sm" id="btnSalir">Salir</button>
+  </header>
+  <div id="banner" class="banner hidden"></div>
+  <nav class="tabs" id="tabs">
+    <button data-t="moldes" class="on">Moldes</button>
+    <button data-t="estanteria">Estantería</button>
+    <button data-t="imprimir">Imprimir P.07</button>
+    <button data-t="admin" id="tabAdmin" class="hidden">Administración</button>
+  </nav>
+  <main>
+    <section class="panel" id="t-moldes">
+      <div class="toolbar">
+        <input type="search" id="q" placeholder="Buscar molde, cliente, posición, Nº control…">
+        <select id="fEstado"><option value="">Todos los estados</option></select>
+      </div>
+      <div class="filters" id="filters"></div>
+      <div class="count" id="count"></div>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <section class="panel hidden" id="t-estanteria">
+      <div class="opts"><label><input type="checkbox" id="soloLibres"> Mostrar solo posiciones libres</label></div>
+      <h3 class="sec" style="margin-top:0">Estantes</h3><div class="grid" id="gridEst"></div>
+      <h3 class="sec">Pallets</h3><div class="pallets" id="gridPal"></div>
+      <h3 class="sec">Otras ubicaciones</h3><div class="pallets" id="gridOtr"></div>
+    </section>
+
+    <section class="panel hidden" id="t-imprimir">
+      <div class="opts">
+        <label>Orden <select id="pOrden"><option value="pos">Por Nº de molde / estantería</option><option value="cli">Por cliente</option><option value="ctl">Por Nº de control (histórico de ingresos)</option></select></label>
+        <label>Formato <select id="pForm"><option value="std">Rótulo P.07 · auditoría (Nº Molde, Especificación, Cliente, Nº Control)</option><option value="full">Completo (+ Personal para mover y Estado)</option></select></label>
+        <label><input type="checkbox" id="pLibres"> Incluir posiciones libres</label>
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="btnPrint">Imprimir / Guardar PDF</button>
+        <button class="btn sec" id="btnXlsx">Descargar Excel</button>
+      </div>
+      <div class="preview"><div id="preview"></div></div>
+    </section>
+
+    <section class="panel hidden" id="t-admin">
+      <h3 class="sec" style="margin-top:0">Alta de molde</h3>
+      <form id="fNuevoMolde">
+        <div class="field"><label>Especificación *</label><input name="esp" required maxlength="300"></div>
+        <div class="row2">
+          <div class="field"><label>Cliente</label><input name="cli" maxlength="120"></div>
+          <div class="field"><label>Nº control</label><input name="ctl" maxlength="40"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Posición (por defecto S/A)</label><input name="pos" placeholder="S/A" list="dlPos"></div>
+          <div class="field"><label>Personal para mover</label><select name="per"><option value="">—</option><option>1</option><option>2</option></select></div>
+        </div>
+        <button class="btn ok">Crear molde</button>
+      </form>
+      <h3 class="sec">Alta de posición</h3>
+      <form id="fNuevaPos" class="row2">
+        <div class="field"><label>Código (ej: 335, 335 BIS, P19)</label><input name="cod" required maxlength="20"></div>
+        <div class="field"><label>Tipo</label><select name="tipo"><option>ESTANTE</option><option>PALLET</option><option>DEPOSITO</option><option>OTRO</option><option>SIN_ASIGNAR</option></select></div>
+        <div><button class="btn ok">Crear posición</button></div>
+      </form>
+    </section>
+  </main>
+  <footer class="cred">Desarrollado por Mgter. Diego Ortiz — Líder de Mejora Continua | Consultor ISO · Soporte: +54 9 11 4170-6692</footer>
+</div>
+
+<datalist id="dlPos"></datalist>
+<div id="toast"></div>
+<div id="printArea" class="sheet"></div>
+
+<script src="config.js"></script>
+<script>
+(function(){
+'use strict';
+var API = (window.P07_CONFIG||{}).API_URL;
+var LS = {
+  get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},
+  set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},
+  del:function(k){try{localStorage.removeItem(k)}catch(e){}}
+};
+var S = {clave:LS.get('p07_clave')||'', nombre:LS.get('p07_nombre')||'', rol:null, data:null, filtro:'todos', tab:'moldes', timer:null};
+var $ = function(id){return document.getElementById(id)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function norm(s){return String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}
+function toast(msg,bad){var t=$('toast');t.textContent=msg;t.className='show'+(bad?' bad':'');clearTimeout(toast._t);toast._t=setTimeout(function(){t.className=''},3200)}
+function fmtDate(iso){if(!iso)return '—';var d=new Date(iso);return d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit'})}
+function fmtDT(iso){if(!iso)return '—';var d=new Date(iso);return d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit'})+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}
+
+async function api(path,opts){
+  opts=opts||{};
+  var h={'X-Clave':S.clave};
+  if(opts.body)h['Content-Type']='application/json';
+  var r;
+  try{ r=await fetch(API+path,{method:opts.method||'GET',headers:h,body:opts.body?JSON.stringify(opts.body):undefined}); }
+  catch(e){ var er=new Error('Sin conexión con el servidor.'); er.offline=true; throw er; }
+  var j=null; try{j=await r.json()}catch(e){}
+  if(!r.ok){ var er2=new Error((j&&j.error)||('Error '+r.status)); er2.status=r.status; er2.data=j||{}; throw er2; }
+  return j;
+}
+
+/* ---------- login ---------- */
+$('lgNombre').value=S.nombre;
+$('loginForm').addEventListener('submit',async function(ev){
+  ev.preventDefault();
+  var n=$('lgNombre').value.trim(), c=$('lgClave').value;
+  $('lgErr').textContent=''; $('lgBtn').disabled=true;
+  S.clave=c;
+  try{
+    var r=await api('/api/login',{method:'POST',body:{}});
+    S.nombre=n; S.rol=r.rol; LS.set('p07_clave',c); LS.set('p07_nombre',n);
+    await enter();
+  }catch(e){ S.clave=''; $('lgErr').textContent=e.status===401||e.status===403?'Clave incorrecta.':e.message; }
+  $('lgBtn').disabled=false;
+});
+async function tryAuto(){
+  if(!S.clave||!S.nombre)return;
+  try{ var r=await api('/api/login',{method:'POST',body:{}}); S.rol=r.rol; await enter(); }
+  catch(e){ if(e.status===401||e.status===403){S.clave='';LS.del('p07_clave')} }
+}
+$('btnSalir').addEventListener('click',function(){
+  S.clave='';S.rol=null;LS.del('p07_clave');clearInterval(S.timer);
+  $('app').classList.add('hidden');$('login').classList.remove('hidden');$('lgClave').value='';
+});
+async function enter(){
+  $('login').classList.add('hidden');$('app').classList.remove('hidden');
+  $('userChip').textContent=S.nombre+' · '+(S.rol==='admin'?'Administrador':'Planta');
+  $('tabAdmin').classList.toggle('hidden',S.rol!=='admin');
+  await load(true);
+  clearInterval(S.timer);S.timer=setInterval(function(){if(!document.hidden&&!document.querySelector('.dlg'))load(false)},45000);
+}
+
+/* ---------- datos ---------- */
+async function load(first){
+  try{
+    S.data=await api('/api/p07');
+    S.rol=S.data.rol;
+    $('banner').classList.add('hidden');
+    $('hdSub').textContent='Última actualización: '+fmtDT(S.data.ultima_actualizacion);
+    if(first){
+      var sel=$('fEstado');
+      sel.innerHTML='<option value="">Todos los estados</option>'+S.data.estados.map(function(e){return '<option>'+esc(e)+'</option>'}).join('');
+    }
+    $('dlPos').innerHTML=S.data.posiciones.map(function(p){return '<option value="'+esc(p.codigo)+'">'}).join('');
+    renderAll();
+  }catch(e){
+    if(e.status===401||e.status===403){ $('btnSalir').click(); return; }
+    $('banner').textContent='⚠ '+e.message+' Los datos mostrados pueden estar desactualizados.';
+    $('banner').classList.remove('hidden');
+  }
+}
+$('btnRefresh').addEventListener('click',function(){load(false);toast('Actualizado')});
+
+function posMap(){var m={};S.data.posiciones.forEach(function(p){m[p.codigo]=p});return m}
+function porPos(){var m={};S.data.moldes.forEach(function(x){(m[x.posicion||'']=m[x.posicion||'']||[]).push(x)});return m}
+
+/* ---------- tabs ---------- */
+$('tabs').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  S.tab=b.dataset.t;
+  [].forEach.call($('tabs').children,function(x){x.classList.toggle('on',x===b)});
+  ['moldes','estanteria','imprimir','admin'].forEach(function(t){$('t-'+t).classList.toggle('hidden',t!==S.tab)});
+  renderAll();
+});
+
+function renderAll(){
+  if(!S.data)return;
+  if(S.tab==='moldes')renderMoldes();
+  if(S.tab==='estanteria')renderEst();
+  if(S.tab==='imprimir')renderPreview();
+}
+
+/* ---------- Moldes ---------- */
+var FILTROS=[['todos','Todos'],['sin','Sin ubicación'],['maq','En máquina'],['est','Estantería'],['pal','Pallets'],['dep','Depósito / NO']];
+$('filters').innerHTML=FILTROS.map(function(f){return '<button data-f="'+f[0]+'"'+(f[0]==='todos'?' class="on"':'')+'>'+f[1]+'</button>'}).join('');
+$('filters').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;S.filtro=b.dataset.f;
+  [].forEach.call($('filters').children,function(x){x.classList.toggle('on',x===b)});renderMoldes();
+});
+$('q').addEventListener('input',renderMoldes);
+$('fEstado').addEventListener('change',renderMoldes);
+
+function matchFiltro(m,pm){
+  var p=pm[m.posicion]||{tipo:'SIN_ASIGNAR'};
+  switch(S.filtro){
+    case 'sin':return p.tipo==='SIN_ASIGNAR';
+    case 'maq':return m.estado==='EN MAQUINA';
+    case 'est':return p.tipo==='ESTANTE';
+    case 'pal':return p.tipo==='PALLET';
+    case 'dep':return p.tipo==='DEPOSITO'||p.tipo==='OTRO';
+  } return true;
+}
+function renderMoldes(){
+  var pm=posMap(), q=norm($('q').value).trim(), fe=$('fEstado').value;
+  var list=S.data.moldes.filter(function(m){
+    if(!matchFiltro(m,pm))return false;
+    if(fe&&m.estado!==fe)return false;
+    if(q){var h=norm([m.especificacion,m.cliente,m.posicion,m.n_control,m.estado].join(' '));return q.split(/\s+/).every(function(t){return h.indexOf(t)>-1})}
+    return true;
+  }).sort(function(a,b){return ((pm[a.posicion]||{orden:99999}).orden)-((pm[b.posicion]||{orden:99999}).orden)});
+  $('count').textContent=list.length+' de '+S.data.moldes.length+' moldes';
+  var shown=list.slice(0,300);
+  $('cards').innerHTML=shown.map(function(m){
+    var p=pm[m.posicion]||{tipo:'SIN_ASIGNAR'};
+    return '<div class="mold"><div class="pos '+esc(p.tipo)+'">'+esc(m.posicion||'S/A')+'</div><div class="info">'+
+      '<div class="esp">'+esc(m.especificacion)+'</div><div class="cli">'+esc(m.cliente||'Sin cliente')+'</div>'+
+      '<div class="tags">'+(m.n_control?'<span class="tag">Control '+esc(m.n_control)+'</span>':'')+
+      (m.personal_para_mover>1?'<span class="tag two">'+m.personal_para_mover+' personas</span>':'')+
+      (m.estado?'<span class="tag est">'+esc(m.estado)+'</span>':'')+
+      (p.tipo==='SIN_ASIGNAR'?'<span class="tag bad">Sin ubicación</span>':'')+'</div>'+
+      '<div class="who">Último cambio: '+esc(m.actualizado_por)+' · '+fmtDT(m.actualizado_en)+(m.actualizado_ip?' · '+esc(m.actualizado_ip):'')+'</div>'+
+      '<div class="acts"><button class="btn sm" data-mv="'+m.id+'">Mover</button>'+
+      '<button class="btn sm sec" data-ed="'+m.id+'">'+(S.rol==='admin'?'Editar':'Estado')+'</button></div></div></div>';
+  }).join('')+(list.length>300?'<div class="count">Mostrando 300. Afiná la búsqueda para ver el resto.</div>':'');
+}
+$('cards').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  if(b.dataset.mv)moverDlg(+b.dataset.mv);
+  if(b.dataset.ed)editDlg(+b.dataset.ed);
+});
+
+/* ---------- Estantería ---------- */
+$('soloLibres').addEventListener('change',renderEst);
+function renderEst(){
+  var pp=porPos(), solo=$('soloLibres').checked, E=[],P=[],O=[];
+  S.data.posiciones.forEach(function(p){ if(!p.activa)return; (p.tipo==='ESTANTE'?E:p.tipo==='PALLET'?P:O).push(p) });
+  $('gridEst').innerHTML=E.filter(function(p){return !solo||!(pp[p.codigo]||[]).length}).map(function(p){
+    var ms=pp[p.codigo]||[], cls=ms.length>1?'multi':ms.length?'occ':'free';
+    return '<button class="cell '+cls+'" data-p="'+esc(p.codigo)+'"><b>'+esc(p.codigo)+'</b>'+
+      (ms.length?ms.map(function(m){return '<span title="'+esc(m.especificacion)+'">'+esc(m.especificacion)+'</span>'}).join(''):'<span>libre</span>')+'</button>';
+  }).join('');
+  function card(p){var ms=pp[p.codigo]||[];return '<div class="pallet" data-p="'+esc(p.codigo)+'"><b>'+esc(p.codigo)+'</b> · '+ms.length+' molde'+(ms.length===1?'':'s')+(p.codigo==='NO'?'<div style="white-space:normal;color:var(--wine)">Retirados de planta · baja sin oficializar</div>':'')+
+    ms.slice(0,8).map(function(m){return '<div>'+esc(m.especificacion)+'</div>'}).join('')+(ms.length>8?'<div>…</div>':'')+'</div>'}
+  $('gridPal').innerHTML=P.map(card).join('');
+  $('gridOtr').innerHTML=O.map(card).join('');
+}
+$('t-estanteria').addEventListener('click',function(ev){
+  var el=ev.target.closest('[data-p]');if(!el)return;
+  var cod=el.dataset.p, ms=porPos()[cod]||[];
+  if(!ms.length){ pickDlg(cod); return; }
+  detalleDlg(cod,ms);
+});
+function detalleDlg(cod,ms){
+  var o=modal('<h2>Posición '+esc(cod)+'</h2><div class="sub">'+ms.length+' molde'+(ms.length===1?'':'s')+'</div>'+
+    ms.map(function(m){return '<div style="border-top:1px solid var(--line);padding:8px 0"><div class="esp" style="font-weight:650">'+esc(m.especificacion)+'</div><div class="cli" style="color:var(--mut);font-size:13px">'+esc(m.cliente||'')+'</div>'+
+      '<button class="btn sm" data-mv="'+m.id+'" style="margin-top:6px">Mover</button></div>'}).join('')+
+    '<div class="btns"><button class="btn sec" data-x>Cerrar</button></div>');
+  o.addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;if(b.dataset.mv){close(o);moverDlg(+b.dataset.mv)}});
+}
+function pickDlg(cod){
+  var o=modal('<h2>Colocar un molde en '+esc(cod)+'</h2><div class="sub">Buscá el molde que vas a dejar acá.</div>'+
+    '<div class="field"><input id="pkQ" type="search" placeholder="Buscar molde o cliente…"></div><div id="pkL" style="max-height:45vh;overflow:auto"></div>'+
+    '<div class="btns"><button class="btn sec" data-x>Cancelar</button></div>');
+  function fill(){
+    var q=norm(o.querySelector('#pkQ').value).trim(),pm=S.data.moldes;
+    var l=pm.filter(function(m){return !q||q.split(/\s+/).every(function(t){return norm(m.especificacion+' '+m.cliente+' '+m.n_control+' '+m.posicion).indexOf(t)>-1})}).slice(0,40);
+    o.querySelector('#pkL').innerHTML=l.map(function(m){return '<div style="border-top:1px solid var(--line);padding:7px 0;display:flex;gap:8px;align-items:center"><div style="flex:1;min-width:0"><b>'+esc(m.especificacion)+'</b><div style="font-size:12px;color:var(--mut)">'+esc(m.cliente||'')+' · hoy en '+esc(m.posicion||'S/A')+'</div></div><button class="btn sm" data-pk="'+m.id+'">Elegir</button></div>'}).join('')||'<div class="count">Sin resultados</div>';
+  }
+  o.querySelector('#pkQ').addEventListener('input',fill);fill();
+  o.addEventListener('click',function(ev){var b=ev.target.closest('button');if(b&&b.dataset.pk){close(o);moverDlg(+b.dataset.pk,cod)}});
+}
+
+/* ---------- modales ---------- */
+function modal(html){
+  var o=document.createElement('div');o.className='ov';o.innerHTML='<div class="dlg">'+html+'</div>';
+  document.body.appendChild(o);
+  o.addEventListener('click',function(ev){if(ev.target===o||ev.target.closest('[data-x]'))close(o)});
+  return o;
+}
+function close(o){if(o.parentNode)o.parentNode.removeChild(o)}
+function findMolde(id){return S.data.moldes.filter(function(m){return m.id===id})[0]}
+function nameField(){return '<div class="field"><label>Quién hace el cambio</label><input id="dNom" maxlength="60" value="'+esc(S.nombre)+'"></div>'}
+function getNom(o){var n=o.querySelector('#dNom').value.trim();if(n.length<2){return null}S.nombre=n;LS.set('p07_nombre',n);$('userChip').textContent=n+' · '+(S.rol==='admin'?'Administrador':'Planta');return n}
+
+function moverDlg(id,preset){
+  var m=findMolde(id);if(!m)return;
+  var o=modal('<h2>Mover molde</h2><div class="sub"><b>'+esc(m.especificacion)+'</b><br>'+esc(m.cliente||'')+' · hoy en <b>'+esc(m.posicion||'S/A')+'</b></div>'+
+    '<div class="field"><label>Nueva posición</label><input id="dPos" list="dlPos" autocomplete="off" value="'+esc(preset||'')+'" placeholder="Ej: 120, 120 BIS, P3, S/A"></div><div class="hint" id="dHint">Escribí la posición.</div>'+
+    '<div class="field"><label>Estado (opcional)</label><select id="dEst"><option value="">— sin cambio —</option>'+S.data.estados.map(function(e){return '<option'+(e===m.estado?' selected':'')+'>'+esc(e)+'</option>'}).join('')+'</select></div>'+
+    nameField()+'<div class="err" id="dErr"></div><div class="btns"><button class="btn sec" data-x>Cancelar</button><button class="btn ok" id="dOk">Confirmar movimiento</button></div>');
+  var confirmar=false;
+  function hint(){
+    var c=o.querySelector('#dPos').value.trim(), h=o.querySelector('#dHint'), pm=posMap(), key=c.toLowerCase(), p=null;
+    Object.keys(pm).forEach(function(k){if(k.toLowerCase()===key)p=pm[k]});
+    if(!c){h.className='hint';h.textContent='Escribí la posición.';return}
+    if(!p){h.className='hint bad';h.textContent='La posición "'+c+'" no existe. Si es nueva, pedile al administrador que la cree.';return}
+    var oc=(porPos()[p.codigo]||[]).filter(function(x){return x.id!==id});
+    if(p.codigo===m.posicion){h.className='hint mid';h.textContent='Ya está en esa posición.';return}
+    if(p.tipo==='ESTANTE'&&oc.length){h.className='hint mid';h.textContent='⚠ Ocupada por: '+oc.map(function(x){return x.especificacion}).join(' / ');return}
+    if(p.tipo==='PALLET'){h.className='hint good';h.textContent='Pallet '+p.codigo+' · '+oc.length+' molde(s) hoy.';return}
+    h.className='hint good';h.textContent='Posición libre ✔';
+  }
+  o.querySelector('#dPos').addEventListener('input',hint);hint();
+  async function go(){
+    var n=getNom(o), er=o.querySelector('#dErr');er.textContent='';
+    if(!n){er.textContent='Ingresá tu nombre (mínimo 2 letras).';return}
+    var pos=o.querySelector('#dPos').value.trim();if(!pos){er.textContent='Indicá la nueva posición.';return}
+    var body={posicion:pos,nombre:n,estado:o.querySelector('#dEst').value||undefined};if(confirmar)body.confirmar=true;
+    o.querySelector('#dOk').disabled=true;
+    try{
+      var r=await api('/api/moldes/'+id+'/mover',{method:'POST',body:body});
+      close(o);toast(r.sin_cambios?'Sin cambios.':'Movimiento registrado ✔');await load(false);
+    }catch(e){
+      o.querySelector('#dOk').disabled=false;
+      if(e.status===409&&e.data&&e.data.ocupado_por){
+        confirmar=true;
+        er.innerHTML=esc(e.message)+' Ocupada por: <b>'+esc(e.data.ocupado_por.map(function(x){return x.especificacion}).join(' / '))+'</b>. Tocá "Mover igual" para dejar ambos (o corregí la posición).';
+        o.querySelector('#dOk').textContent='Mover igual';o.querySelector('#dOk').className='btn warn';
+      } else er.textContent=e.message;
+    }
+  }
+  o.querySelector('#dOk').addEventListener('click',go);
+  o.querySelector('#dPos').addEventListener('input',function(){confirmar=false;o.querySelector('#dOk').textContent='Confirmar movimiento';o.querySelector('#dOk').className='btn ok'});
+}
+
+function editDlg(id){
+  var m=findMolde(id);if(!m)return;var adm=S.rol==='admin';
+  var o=modal('<h2>'+(adm?'Editar molde':'Estado del molde')+'</h2><div class="sub">'+esc(m.especificacion)+'</div>'+
+    (adm?'<div class="field"><label>Especificación</label><input id="eEsp" maxlength="300" value="'+esc(m.especificacion)+'"></div><div class="row2"><div class="field"><label>Cliente</label><input id="eCli" maxlength="120" value="'+esc(m.cliente||'')+'"></div><div class="field"><label>Nº control</label><input id="eCtl" maxlength="40" value="'+esc(m.n_control||'')+'"></div></div>':'')+
+    '<div class="row2"><div class="field"><label>Estado</label><select id="eEst"><option value="">—</option>'+S.data.estados.map(function(e){return '<option'+(e===m.estado?' selected':'')+'>'+esc(e)+'</option>'}).join('')+'</select></div>'+
+    '<div class="field"><label>Personal para mover</label><select id="ePer"><option value="">—</option><option'+(m.personal_para_mover===1?' selected':'')+'>1</option><option'+(m.personal_para_mover===2?' selected':'')+'>2</option></select></div></div>'+
+    nameField()+'<div class="err" id="dErr"></div><div class="btns"><button class="btn sec" data-x>Cancelar</button><button class="btn ok" id="dOk">Guardar</button></div>');
+  o.querySelector('#dOk').addEventListener('click',async function(){
+    var n=getNom(o), er=o.querySelector('#dErr');if(!n){er.textContent='Ingresá tu nombre.';return}
+    var b={nombre:n}, es=o.querySelector('#eEst').value, pe=o.querySelector('#ePer').value;
+    if(es&&es!==m.estado)b.estado=es;
+    if(pe&&+pe!==m.personal_para_mover)b.personal_para_mover=+pe;
+    if(adm){
+      var v=o.querySelector('#eEsp').value.trim();if(v!==m.especificacion)b.especificacion=v;
+      var c=o.querySelector('#eCli').value.trim();if(c!==(m.cliente||''))b.cliente=c;
+      var k=o.querySelector('#eCtl').value.trim();if(k!==(m.n_control||''))b.n_control=k;
+    }
+    if(Object.keys(b).length===1){close(o);return}
+    try{await api('/api/moldes/'+id,{method:'PATCH',body:b});close(o);toast('Guardado ✔');await load(false)}catch(e){er.textContent=e.message}
+  });
+}
+
+/* ---------- P.07 imprimible ---------- */
+['pOrden','pForm','pLibres'].forEach(function(i){$(i).addEventListener('change',renderPreview)});
+function buildRows(){
+  var pm=posMap(), pp=porPos(), rows=[];
+  var order=$('pOrden').value;
+  if(order==='cli'||order==='ctl'){
+    var cn=function(m){var n=parseFloat(m.n_control);return isNaN(n)?1e9:n};
+    S.data.moldes.slice().sort(order==='cli'
+      ?function(a,b){return norm(a.cliente).localeCompare(norm(b.cliente))||(((pm[a.posicion]||{}).orden||0)-((pm[b.posicion]||{}).orden||0))}
+      :function(a,b){return cn(a)-cn(b)||String(a.n_control).localeCompare(String(b.n_control))})
+      .forEach(function(m){rows.push({pos:m.posicion||'S/A',esp:m.especificacion,cli:m.cliente||'',per:m.personal_para_mover||'',ctl:m.n_control||'',est:m.estado||'',libre:false})});
+    return rows;
+  }
+  S.data.posiciones.filter(function(p){return p.activa}).slice().sort(function(a,b){return a.orden-b.orden}).forEach(function(p){
+    var ms=pp[p.codigo]||[];
+    if(!ms.length){ if($('pLibres').checked&&p.tipo==='ESTANTE')rows.push({pos:p.codigo,esp:'(libre)',cli:'',per:'',ctl:'',est:'',libre:true}); return; }
+    ms.forEach(function(m){rows.push({pos:p.codigo,esp:m.especificacion,cli:m.cliente||'',per:m.personal_para_mover||'',ctl:m.n_control||'',est:m.estado||'',libre:false})});
+  });
+  return rows;
+}
+function sheetHTML(){
+  var full=$('pForm').value==='full', rows=buildRows(), hoy=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+  var th='<th style="width:12%">Nº Molde</th><th>Especificación</th><th style="width:24%">Cliente / Silver</th><th style="width:11%">Nº Control</th>'+(full?'<th style="width:9%">Personal para mover</th><th style="width:14%">Estado</th>':'');
+  return '<div class="hd"><div><h2>Listado de moldes</h2><div style="font-size:9pt;margin-top:3px">Fecha actualización: <b>'+fmtDate(S.data.ultima_actualizacion)+'</b></div></div>'+
+    '<div style="display:flex;gap:10px;align-items:flex-start"><div class="meta">Fecha: 20/09/18<br>Rev: 02 &nbsp; Cod: P.07</div><img src="assets/silver-logo.png" alt=""></div></div>'+
+    '<table><thead><tr>'+th+'</tr></thead><tbody>'+rows.map(function(r){
+      return '<tr'+(r.libre?' class="libre"':'')+'><td><b>'+esc(r.pos)+'</b></td><td>'+esc(r.esp)+'</td><td>'+esc(r.cli)+'</td><td>'+esc(r.ctl)+'</td>'+(full?'<td style="text-align:center">'+esc(r.per)+'</td><td>'+esc(r.est)+'</td>':'')+'</tr>';
+    }).join('')+'</tbody></table><div class="ft">Impreso el '+hoy+' por '+esc(S.nombre)+' · '+rows.length+' registros · Fuente: sistema P.07 en línea</div>';
+}
+function renderPreview(){$('preview').innerHTML=sheetHTML()}
+$('btnPrint').addEventListener('click',function(){$('printArea').innerHTML=sheetHTML();setTimeout(function(){window.print()},60)});
+$('btnXlsx').addEventListener('click',async function(){
+  var full=$('pForm').value==='full', rows=buildRows();
+  var head=['Nº Molde','Especificación','Cliente / Silver','Nº Control'].concat(full?['Personal para mover','Estado']:[]);
+  var aoa=[['Listado de moldes','','','Rev: 02  Cod: P.07'],['Fecha actualización: '+fmtDate(S.data.ultima_actualizacion)],[],head].concat(rows.map(function(r){
+    return [r.pos,r.esp,r.cli,r.ctl].concat(full?[r.per===''?'':r.per,r.est]:[]);
+  }));
+  var fname='P07_Listado_de_moldes_'+new Date().toISOString().slice(0,10);
+  try{
+    if(!window.XLSX)await new Promise(function(res,rej){var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)});
+    var ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=full?[{wch:10},{wch:48},{wch:28},{wch:11},{wch:10},{wch:26}]:[{wch:10},{wch:48},{wch:28},{wch:11}];
+    var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'P.07');XLSX.writeFile(wb,fname+'.xlsx');
+  }catch(e){
+    var csv='﻿'+aoa.map(function(r){return r.map(function(c){return '"'+String(c==null?'':c).replace(/"/g,'""')+'"'}).join(';')}).join('\r\n');
+    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=fname+'.csv';document.body.appendChild(a);a.click();a.remove();
+    toast('Excel no disponible; se descargó CSV (abre en Excel).');
+  }
+});
+
+/* ---------- admin ---------- */
+$('fNuevoMolde').addEventListener('submit',async function(ev){
+  ev.preventDefault();var f=ev.target.elements, b={nombre:S.nombre,especificacion:f.esp.value.trim()};
+  if(f.cli.value.trim())b.cliente=f.cli.value.trim();if(f.ctl.value.trim())b.n_control=f.ctl.value.trim();
+  if(f.pos.value.trim())b.posicion=f.pos.value.trim();if(f.per.value)b.personal_para_mover=+f.per.value;
+  try{await api('/api/moldes',{method:'POST',body:b});ev.target.reset();toast('Molde creado ✔');await load(false)}catch(e){toast(e.message,true)}
+});
+$('fNuevaPos').addEventListener('submit',async function(ev){
+  ev.preventDefault();var f=ev.target.elements;
+  try{await api('/api/posiciones',{method:'POST',body:{nombre:S.nombre,codigo:f.cod.value,tipo:f.tipo.value}});ev.target.reset();toast('Posición creada ✔');await load(false)}catch(e){toast(e.message,true)}
+});
+
+tryAuto();
+})();
+</script>
+</body>
+</html>
