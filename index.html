@@ -112,6 +112,7 @@ h3.sec{margin:16px 0 8px;font-size:14px;color:var(--indigo);text-transform:upper
 footer.cred{text-align:center;font-size:12px;color:var(--mut);padding:14px 16px;border-top:1px solid var(--line)}
 .banner{background:var(--wine-bg);color:var(--wine);padding:8px 14px;font-size:13px;text-align:center}
 #printArea{display:none}
+.p10frame{width:100%;height:calc(100vh - 250px);min-height:420px;border:1px solid var(--line);border-radius:8px;background:#fff}
 @media (max-width:560px){ .row2{grid-template-columns:1fr} header.top h1{font-size:15px} nav.tabs{top:96px} }
 @media print{
   @page{size:A4 portrait;margin:12mm}
@@ -150,6 +151,7 @@ footer.cred{text-align:center;font-size:12px;color:var(--mut);padding:14px 16px;
     <button data-t="moldes" class="on">Moldes</button>
     <button data-t="estanteria">Estantería</button>
     <button data-t="imprimir">Imprimir P.07</button>
+    <button data-t="p10">P.10 Altas y bajas</button>
     <button data-t="admin" id="tabAdmin" class="hidden">Administración</button>
   </nav>
   <main>
@@ -182,6 +184,14 @@ footer.cred{text-align:center;font-size:12px;color:var(--mut);padding:14px 16px;
         <button class="btn sec" id="btnXlsx">Descargar Excel</button>
       </div>
       <div class="preview"><div id="preview"></div></div>
+    </section>
+
+    <section class="panel hidden" id="t-p10">
+      <div class="toolbar">
+        <a class="btn" style="text-decoration:none;display:inline-block" id="btnP10Open" target="_blank" rel="noopener">Abrir en Google Sheets</a>
+      </div>
+      <div class="hint">P.10 · Formulario de altas y bajas de moldes (Rev. 1) y solapa «Ingreso-Egreso Moldes» (indicador del Apéndice C). Si no se ve la planilla, abrila con el botón y verificá que estés con tu cuenta de Google autorizada.</div>
+      <iframe class="p10frame" id="p10Frame" title="P.10 Altas y bajas de moldes" loading="lazy"></iframe>
     </section>
 
     <section class="panel hidden" id="t-admin">
@@ -305,9 +315,17 @@ $('tabs').addEventListener('click',function(ev){
   var b=ev.target.closest('button');if(!b)return;
   S.tab=b.dataset.t;
   [].forEach.call($('tabs').children,function(x){x.classList.toggle('on',x===b)});
-  ['moldes','estanteria','imprimir','admin'].forEach(function(t){$('t-'+t).classList.toggle('hidden',t!==S.tab)});
+  ['moldes','estanteria','imprimir','p10','admin'].forEach(function(t){$('t-'+t).classList.toggle('hidden',t!==S.tab)});
+  if(S.tab==='p10')cargarP10();
   renderAll();
 });
+
+function cargarP10(){
+  var id=(window.P07_CONFIG||{}).P10_SHEET_ID;if(!id)return;
+  var f=$('p10Frame');
+  if(!f.getAttribute('src'))f.setAttribute('src','https://docs.google.com/spreadsheets/d/'+id+'/preview');
+  $('btnP10Open').setAttribute('href','https://docs.google.com/spreadsheets/d/'+id+'/edit');
+}
 
 function renderAll(){
   if(!S.data)return;
