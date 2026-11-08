@@ -190,7 +190,7 @@ footer.cred{text-align:center;font-size:12px;color:var(--mut);padding:14px 16px;
       <div class="toolbar">
         <a class="btn" style="text-decoration:none;display:inline-block" id="btnP10Open" target="_blank" rel="noopener">Abrir en Google Sheets</a>
       </div>
-      <div class="hint">P.10 · Formulario de altas y bajas de moldes (Rev. 1) y solapa «Ingreso-Egreso Moldes» (indicador del Apéndice C). Si no se ve la planilla, abrila con el botón y verificá que estés con tu cuenta de Google autorizada.</div>
+      <div class="hint">P.10 · Formulario de altas y bajas de moldes (Rev. 2) y solapa «Ingreso-Egreso Moldes» (indicador del Apéndice C). Si no se ve la planilla, abrila con el botón y verificá que estés con tu cuenta de Google autorizada.</div>
       <iframe class="p10frame" id="p10Frame" title="P.10 Altas y bajas de moldes" loading="lazy"></iframe>
     </section>
 
@@ -535,7 +535,7 @@ function sheetHTML(){
   var full=$('pForm').value==='full', rows=buildRows(), hoy=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit'});
   var th='<th style="width:12%">Nº Molde</th><th>Especificación</th><th style="width:24%">Cliente / Silver</th><th style="width:11%">Nº Control</th>'+(full?'<th style="width:9%">Personal para mover</th><th style="width:14%">Estado</th>':'');
   return '<div class="hd"><div><h2>Listado de moldes</h2><div style="font-size:9pt;margin-top:3px">Fecha actualización: <b>'+fmtDate(S.data.ultima_actualizacion)+'</b></div></div>'+
-    '<div style="display:flex;gap:10px;align-items:flex-start"><div class="meta">Fecha: 20/09/18<br>Rev: 02 &nbsp; Cod: P.07</div><img src="assets/silver-logo.png" alt=""></div></div>'+
+    '<div style="display:flex;gap:10px;align-items:flex-start"><div class="meta">Fecha: 11/10/26<br>Rev: 03 &nbsp; Cod: P.07</div><img src="assets/silver-logo.png" alt=""></div></div>'+
     '<table><thead><tr>'+th+'</tr></thead><tbody>'+rows.map(function(r){
       return '<tr'+(r.libre?' class="libre"':'')+'><td><b>'+esc(r.pos)+'</b></td><td>'+esc(r.esp)+'</td><td>'+esc(r.cli)+'</td><td>'+esc(r.ctl)+'</td>'+(full?'<td style="text-align:center">'+esc(r.per)+'</td><td>'+esc(r.est)+'</td>':'')+'</tr>';
     }).join('')+'</tbody></table><div class="ft">Impreso el '+hoy+' por '+esc(S.nombre)+' · '+rows.length+' registros · Fuente: sistema P.07 en línea</div>';
@@ -545,7 +545,7 @@ $('btnPrint').addEventListener('click',function(){$('printArea').innerHTML=sheet
 $('btnXlsx').addEventListener('click',async function(){
   var full=$('pForm').value==='full', rows=buildRows();
   var head=['Nº Molde','Especificación','Cliente / Silver','Nº Control'].concat(full?['Personal para mover','Estado']:[]);
-  var aoa=[['Listado de moldes','','','Rev: 02  Cod: P.07'],['Fecha actualización: '+fmtDate(S.data.ultima_actualizacion)],[],head].concat(rows.map(function(r){
+  var aoa=[['Listado de moldes','','','Rev: 03  Cod: P.07'],['Fecha actualización: '+fmtDate(S.data.ultima_actualizacion)],[],head].concat(rows.map(function(r){
     return [r.pos,r.esp,r.cli,r.ctl].concat(full?[r.per===''?'':r.per,r.est]:[]);
   }));
   var fname='P07_Listado_de_moldes_'+new Date().toISOString().slice(0,10);
